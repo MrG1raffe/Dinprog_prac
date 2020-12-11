@@ -1,0 +1,302 @@
+\documentclass[16pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}  
+\usepackage{amsthm}
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{bbm}
+
+\newcommand{\incfig}[2]{%
+    \def\svgwidth{#2 mm}
+    \import{./figures/}{#1.pdf_tex}
+}
+
+\newtheorem{Th}{Теорема}
+\newtheorem{Lem}{Лемма}
+\newtheorem{Def}{Определение}
+\newtheorem*{Cons}{Следствие}
+\newtheorem{Rem}{Замечание}
+\newtheorem{St}{Утверждение}
+\newenvironment{Proof}{\par\noindent{\bf Доказательство. \\}}{\hfill$\scriptstyle\blacksquare$}
+
+\DeclareMathOperator{\Arccos}{arccos}
+\DeclareMathOperator{\Arctg}{arctg}
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\Sign}{sgn}
+\DeclareMathOperator*{\Argmax}{Argmax}
+\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\Min}{min}
+
+
+\newcommand\Real{\mathbb{R}} 
+\newcommand\A{(\cdot)} 
+\newcommand\Sum[2]{\sum\limits_{#1}^{#2}}
+\newcommand\Scal[2]{\langle #1,\, #2 \rangle}
+\newcommand\Norm[1]{\left\| #1 \right\|}
+\newcommand\Int[2]{\int\limits_{#1}^{#2}}
+\newcommand{\Me}{\mathbb{E}}
+\newcommand{\I}{\mathbbm{1}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand\Reff[1]{(\ref{#1})}
+\newcommand{\deq}{\overset{d}{=}}
+\newcommand{\Bor}{\mathcal{B}}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+\ \vspace{-3cm}
+
+\includegraphics[width=0.5\textwidth]{msu.eps}\\
+{\scshape Московский государственный университет имени М.~В.~Ломоносова}\\
+Факультет вычислительной математики и кибернетики\\
+Кафедра системного анализа
+
+\vfill
+
+{\LARGE Отчёт по практикуму}
+
+\vspace{1cm}
+
+{\Huge\bfseries <<Эллипсоидальные оценки для множества достижимости>>}
+\end{center}
+
+\vspace{1cm}
+
+\begin{flushright}
+  \large
+  \textit{Студент 415 группы}\\
+  Д.\,М.~Сотников
+
+  \vspace{5mm}
+
+  \textit{Руководитель практикума}\\
+  к.ф.-м.н., доцент И.\,В.~Востриков
+\end{flushright}
+
+\vfill
+
+\begin{center}
+Москва, 2020
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+\section{Постановка задачи}
+Рассматривается линейная управляемая система:
+
+\begin{equation}\label{task}
+\begin{cases}
+\dot{x}(t)  = A(t)x(t) + B(t)u(t), \ \ t \in [t_0, t_1],\\
+x(t_0) \in \mathcal{E}(x_0, X_0),\\
+u(t)\in \mathcal{E}(q(t), Q(t)).
+\end{cases}
+\end{equation}
+
+
+Здесь $u(t) \in \Real^m, \, x(t) \in \Real^n,\, x_0 \in \Real^n, \,X_0 \in \Real^{n \times n},\, X_0 = X_0^* > 0, \, A(t) \in \Real^{n \times n}, \,B(t) \in \Real^{n \times m},\, q(t) \in \Real^m, \, Q(t) \in \Real^{m \times m},\, Q(t) = Q^*(t) > 0 $ при любых $t$ из $[t_0,\, t_1]$. Функции $A(t),\, B(t),\,$ $q(t),\, Q(t)$ непрерывны на $[t_0, t_1].$
+
+
+Необходимо построить:
+\begin{enumerate}
+	\item Внутренние и внешние эллипсоидальные оценки множества достижимости системы (\ref{task}).
+	\item Проекции множества разрешимости на двумерную плоскость.
+	\item Трехмерную проекцию множества разрешимости.
+	
+\end{enumerate}
+
+\section{Внутренние и внешние оценки для суммы эллипсоидов}
+
+Обозначим эллипсоид с центром $q \in \Real^n$ и матрицей конфигурации $Q \in \Real^{n \times n},\ Q = Q^* > 0$ 
+
+$$\mathcal{E}(q, Q) = \{x\colon \Scal{(x - q)}{Q^{-1}(x - q)} \leq 1\}.$$
+
+Нас будут интересовать верхние и нижние оценки $\mathcal{E}_-,\, \mathcal{E}_+$ суммы (по Минковскому) конечного числа эллипсоидов $\mathcal{E}_1, \ldots, \mathcal{E}_n$:
+$$\mathcal{E}_- \subset \mathcal{E}_1 + \ldots + \mathcal{E}_n \subset \mathcal{E}_+.$$
+
+\subsection{Внешняя оценка}
+Пусть $p_1, \ldots, p_n > 0$. Покажем, что 
+$$\mathcal{E}_+ = (p_1 + \ldots + p_n)\left(\dfrac{Q_1}{p_1} + \ldots + \dfrac{Q_n}{p_n}\right)$$
+является внешней оценкой.
+
+Действительно,
+\begin{multline}\notag
+\rho(l|\mathcal{E}_+)^2 = \Sum{i=1}{n}\Scal{l}{Q_il} + \sum_{i > j} \left(\dfrac{p_j}{p_i}\Scal{l}{Q_il} + \dfrac{p_i}{p_j}\Scal{l}{Q_jl}\right) \geq \\ \geq\Sum{i=1}{n}\Scal{l}{Q_il} + 2\sum_{i > j}\sqrt{\Scal{l}{Q_il}\Scal{l}{Q_jl}} = \rho(l|\mathcal{E}_1 + \ldots + \mathcal{E}_n)^2.
+\end{multline}
+
+Равенство здесь достигается тогда и только тогда, когда $p_i = \sqrt{\Scal{l}{Q_il}},\ i = 1, \ldots, n$. Таким образом, опорный вектор $\mathcal{E}_+$ по направлению $l$ совпадает с опорным ветором $\mathcal{E}_1 + \ldots + \mathcal{E}_n$, и потому
+$$ \mathcal{E}_1 + \ldots + \mathcal{E}_n = \bigcap_{l \in S_1} \mathcal{E}_+(l).$$
+
+\subsection{Внутренняя оценка}
+
+Пусть матрица конфигурации для $\mathcal{E}_-$
+$$Q_- = Q_*^*Q_*, \quad Q_* = \Sum{i=1}{n}S_iQ_i^\frac12,$$
+где $S_i$ --- ортогональные матрицы.
+
+С помощью неравенства Коши--Буняковского можно показать, что $Q_-$ действительно является внутренней оценкой, и, более того $\rho(l|\mathcal{E}_-) = \rho(l|\mathcal{E}_1 + \ldots + \mathcal{E}_n)$ в том и только том случае, когда $S_iQ_i^\frac12l = \lambda_iS_1Q_1^\frac12l$.
+
+\section{Эллипсоидальные оценки для интеграла}
+Рассмотрим выражение 
+$$I(t) = \mathcal{E}_0(0, Q_0) + \int\limits_{t_0}^{t}\mathcal{E}(0, Q(\tau))d\tau$$
+--- интеграл от эллипсоида $\mathcal{E}(0, Q(t)))$ по переменной $\tau \in [t_0, t]$. Введем разбиение $\{\tau_i\}_{i = 1}^{N}$ отрезка интегрирования $[t_0, t]$ и будем представлять интеграл в виде сумм 
+$$
+I(t) = \lim\limits_{N \rightarrow \infty}I_N,
+$$
+где $I_N = \mathcal{E}_0 + \sum\limits_{i = 1}^{N}\sigma \mathcal{E}_i,\quad \sigma = \dfrac{t - t_0}{N}, \quad \mathcal{E}_{i} = \mathcal{E}(0, Q(\tau_i)).
+$
+
+\subsection{Внешняя оценка}
+Матрица конфигурации внешней оценки интегральной суммы находится по формуле
+\begin{multline}\notag
+Q_+^N = \left( p_0 + \sum\limits_{i = 1}^{N}p_i \right)\left( \dfrac{Q_0}{p_0} + \sum\limits_{i = 1}^{N} \dfrac{Q_i \sigma^2}{p_i}\right) = \left\{ p_0 = \langle l, Q_0 l \rangle ^{\frac{1}{2}},\ p_i = \sigma \langle l, Q_i l \rangle ^{\frac{1}{2}}\right\} =\\
+= \left( p_0 + \sum\limits_{i = 1}^{N}\sigma\langle l, Q_il\rangle^{\frac{1}{2}} \right)\left( \dfrac{Q_0}{p_0} + \sum\limits_{i = 1}^{N} \sigma \dfrac{Q_i}{\langle l, Q_il\rangle^{\frac{1}{2}}}\right).
+\end{multline}
+
+При стремлении $N$ к бесконечности получим следующую матрицу конфигурации для внешней оценки интеграла:
+$$Q(\tau) = \left( p_0 + \int\limits_{t_0}^{t} p(\tau)d\tau\right)\left( \dfrac{Q_0}{p_0} + \int\limits_{t_0}^{t}\dfrac{Q(\tau)}{p(\tau)}d\tau\right).$$
+
+Таким образом, интеграл аппроксимируется пересечением эллипсоидов по различным направлениям $l$, то есть $I(t) = \bigcap\limits_{\Norm{l} = 1} \mathcal{E}_+(l)$.
+
+\subsection{Внутренняя оценка}
+Аналогичными рассуждениями приходим к тому, что матрица конфигурации нижней оценки для интеграла имеет вид
+$$Q_- = Q_*^*Q_*, \quad Q_* = S_0Q_0^\frac12 + \Int{t_0}{t}S(\tau)Q^\frac12(\tau)d\tau,$$
+
+причем оценка будет точной по направлению $l$, если 
+$$S_0Q_0^\frac12l = \lambda(\tau)S(\tau)Q^\frac12(\tau)l.$$
+
+В качестве $S_0$ далее будем использовать единичную матрицу.
+
+\section{Эллипсоидальное оценивание множества достижимости}
+Будем дополнительно предполагать, что в задаче (\ref{task}) выполнено $\ B(t)Q(t)B^*(t) > 0$ при любых $t \in [t_0,\, t]$. Оценим множество достижимости $\mathcal{X}[t]$.
+
+Найдем траекторию $x(t)$ по формуле Коши:
+
+$$x(t) = X(t, t_0)x(t_0) + \int\limits_{t_0}^{t} X(t, \tau)B(\tau)u(\tau)d\tau,$$
+
+где $X(t, \tau)$ --- фундаментальная матрица, полученная как решение задачи Коши:
+
+\begin{equation}\label{fund}
+\left\{
+\begin{aligned}
+&\dfrac{\partial X(t, \tau)}{\partial \tau} = -X(t, \tau)A(\tau),\\
+&X(t, t) = I.
+\end{aligned}
+\right.
+\end{equation}
+
+
+
+Множество достижимости можно представить следующим образом:
+$$
+\mathcal{X}[t] = X(t, t_0)\mathcal{E}(x_0, X_0) + \int\limits_{t_0}^{t}X(t, \tau)B(\tau)\mathcal{E}(q(\tau), Q(\tau))d\tau.
+$$
+
+\begin{St}
+Пусть $\mathcal{E}(p, P)$ --- эллипсоид с центром $p$ и матрицей конфигурации $P$, a $B$ --- невырожденная квадратная матрица тогда $B\mathcal{E}(p, P) = \mathcal{E}(Bp, BPB^*)$.
+\end{St}
+\begin{Proof}
+Пусть $x \in \mathcal{E}(p, P)$, что равносильно $\Scal{x}{P^{-1}x}  \leq 1$.
+
+Рассмотрим теперь $B\mathcal{E}(p, P) = \mathcal{E}(q, Q)$, для него будет верно 
+$$\langle B^{-1}x, P^{-1}B^{-1}x\rangle = \langle x, \left(B^{-1}\right)^* P^{-1} B^{-1}x \rangle \leqslant 1.$$
+Следовательно, $Q^{-1} = \left(B^{-1}\right)^* P^{-1} B^{-1}$ и $Q = B P B^*$, что и требовалось доказать.
+\end{Proof}
+
+
+Из утверждения следует, что множество $\mathcal{X}[t]$ может быть записано в виде:
+\begin{multline}\notag
+\mathcal{X}[t] = \mathcal{E}(X(t, t_0)x_0,\, X(t, t_0)X_0 X^*(t, t_0)) + \\+\int\limits_{t_0}^{t} \mathcal{E}(X(t, \tau)B(\tau) q(\tau),\, X(t, \tau) B(\tau) Q(\tau) B^*(\tau) X^*(t, \tau))d\tau.
+\end{multline}
+
+Таким образом, задача нахождения множества достижимости сводится к задаче интегрирования эллипсоидов, рассмотренной в предыдущем разделе. Построим внешнюю и внутреннюю элипсоидальные оценки $\mathcal{X}[t]$.
+
+
+Обозначим внешнюю эллипсоидальную оценку $\mathcal{E}(x_{+}(t), X_{+}(t))$. Параметры задаются формулами
+$$
+x_+(t) = X(t, t_0)x_0 + \Int{t_0}{t}X(t, \tau)B(\tau)q(\tau)d\tau,
+$$
+
+$$
+X_{+}(t) = \left( p_0 + \int\limits_{t_0}^{t} p(\tau)d\tau\right)\left(\dfrac{X(t, t_0)X_0 X^*(t, t_0)}{p_0} + \int\limits_{t_0}^{t} \dfrac{X(t, \tau)B(\tau)Q(\tau) B^*(\tau) X^*(t, \tau)}{p(\tau)}d\tau\right),
+$$ 
+
+где 
+$$
+\begin{aligned} 
+&p_0 = \langle l, X(t, t_0)X_0 X^*(t, t_0)l \rangle^{\frac{1}{2}},\\
+&p(\tau) =\langle l, X(t, \tau) B(\tau) Q(\tau) B^*(\tau) X^*(t, \tau) l\rangle^{\frac{1}{2}}.
+\end{aligned}
+$$
+
+Выбранные таким образом $p$ позволяют получить оценку, точную в направлении $l$.
+
+Внутренняя оценка получается аналогичным образом.
+$${X}_-(t) = Q_*^*(t)Q_*(t),$$
+$$Q_*(t) = X_0^\frac12X^*(t, t_0) + \Int{t_0}{t}S(\tau)Q^{\frac12}(\tau)B^*(\tau)X^*(t, \tau)d\tau.$$
+
+Оценка будет точной по направлению $l$, если для любых $\tau$ будет выполнено
+\begin{equation}\label{eq_cond}
+\lambda(\tau)X_0^\frac12X^*(t, t_0)l = S(\tau)Q^{\frac12}(\tau)B^*(\tau)X^*(t, \tau)l.
+\end{equation}
+Поскольку $S(\tau)$ является ортогональной матрицей, 
+$$\lambda(\tau) = \dfrac{\Norm{Q^{\frac12}(\tau)B^*(\tau)X^*(t, \tau)l}}{\Norm{X_0^\frac12X^*(t, t_0)l}}.$$
+
+Найдем теперь $S(\tau)$ из сингулярного разложения векторов
+$$\lambda(\tau)X_0^\frac12X^*(t, t_0)l = U_1d_1V_1,$$
+$$Q^{\frac12}(\tau)B^*(\tau)X^*(t, \tau)l = U_2d_2V_2.$$
+Здесь $U_1, U_2$ --- ортогональные матрицы, $d_1 = (d_{11}, 0, \ldots, 0)^T,\, d_2 = (d_{21}, 0, \ldots, 0)^T$,
+$V_1, V_2 \in \{-1,\, 1\}$. Так как нормы векторов совпадают, и $d_1 \geq 0, \, d_2 \geq 0$, верно $d1 = d2$.
+
+Теперь, если выбрать $S(\tau) = \dfrac{V_1}{V_2}U_1U_2^*$, равенство (\ref{eq_cond}) будет выполнено, а матрица $S(\tau)$ окажется ортогональной.
+
+\section{Описание алгоритма}
+
+Верхние и нижние эллипсоидальные оценки вычисляются по формулам для $\mathcal{X}_+(t),\, \mathcal{X}_-(t)$,
+которые были описаны в предыдущем разделе. Фундаментальная матрица как функция $X(t, \cdot)$ находится численно из системы (\ref{fund}).
+
+Для нахождения проекции множества достижимости перебираются направления $l$ из шара соответствующей размерности, для каждого из них вычисляется эллипсоидальная оценка, точная по этому направлению. По оценке вычисляется опорный вектор по направлению $l$. Объединение таких опорных векторов представляет собой численную аппроксимацию проекции множества достижимости.
+
+\section{Примеры работы алгоритма}
+
+Построение внутренних и внешних эллипсоидальных оценок приведено на рис. 1, 2. 
+
+На рис. 3 показана проекция множества достижимости трехмерной системы на координатную плоскость $Ox_2x_3$.
+
+На рис. 4 изображено само множество достижимости этой системы в момент $t = 1$.
+
+\newpage
+\begin{figure}[h]
+	\center
+    \includegraphics[scale=0.75]{int.pdf}
+    \caption{Внутренние оценки.}
+\end{figure}
+
+\begin{figure}[h]
+	\center
+    \includegraphics[scale=0.75]{ext.pdf}
+    \caption{Внешние оценки.}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+	\center
+    \includegraphics[scale=0.8]{tube.pdf}
+    \caption{Проекция множества достижимости на плоскость.}
+\end{figure}
+
+\begin{figure}[h]
+	\center
+    \includegraphics[scale=0.8]{set.pdf}
+    \caption{Множество достижимости.}
+\end{figure}
+\end{document}

@@ -1,0 +1,11 @@
+\babel@toc {russian}{}
+\contentsline {section}{\numberline {1}Постановка задачи}{3}%
+\contentsline {section}{\numberline {2}Внутренние и внешние оценки для суммы эллипсоидов}{3}%
+\contentsline {subsection}{\numberline {2.1}Внешняя оценка}{3}%
+\contentsline {subsection}{\numberline {2.2}Внутренняя оценка}{4}%
+\contentsline {section}{\numberline {3}Эллипсоидальные оценки для интеграла}{4}%
+\contentsline {subsection}{\numberline {3.1}Внешняя оценка}{4}%
+\contentsline {subsection}{\numberline {3.2}Внутренняя оценка}{4}%
+\contentsline {section}{\numberline {4}Эллипсоидальное оценивание множества достижимости}{5}%
+\contentsline {section}{\numberline {5}Описание алгоритма}{6}%
+\contentsline {section}{\numberline {6}Примеры работы алгоритма}{6}%
